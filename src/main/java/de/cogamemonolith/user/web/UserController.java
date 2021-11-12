@@ -31,10 +31,7 @@ public class UserController {
     PasswordEncoder passwordEncoder;
 
 
-    @GetMapping("/greeting")
-    public String greeting1() {
-        return "Hello from user-service";
-    }
+
 
     @GetMapping("/users")
     public List<User> getUsers() {
