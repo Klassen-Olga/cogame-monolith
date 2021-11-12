@@ -1,5 +1,11 @@
 # Compiled class file
 *.class
+.idea
+target
+.mvn
+mvnw
+mvnw.cmd
+cogame-monolith.iml
 
 # Log file
 *.log
