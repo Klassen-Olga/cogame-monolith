@@ -1,4 +1,4 @@
-package de.cogamemonolith.user.model;
+package de.cogamemonolith.model;
 
 
 /*
@@ -6,7 +6,7 @@ package de.cogamemonolith.user.model;
  * Changes to the size of the attributes will be directly reflected in the documentation.
  * */
 
-public class AttributeDescription {
+public class UserAttributeDescription {
 
     public static final int userNameSize = 2;
     public static final int phoneNumberSize = 4;

@@ -1,12 +1,9 @@
-package de.cogamemonolith.event.web;
+package de.cogamemonolith.web;
 
 
-import de.cogamemonolith.event.model.Event;
-import de.cogamemonolith.event.repository.EventRepository;
+import de.cogamemonolith.model.Event;
+import de.cogamemonolith.repository.EventRepository;
 import de.cogamemonolith.exception.NotFoundException;
-import de.cogamemonolith.exception.NumberOfParticipantsReached;
-import de.cogamemonolith.message.model.Message;
-import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +13,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -43,7 +39,7 @@ public class EventController {
     }
 
     @GetMapping("/events/{id}")
-    public Event getEvent(@PathVariable String id) {
+    public Event getEvent(@PathVariable Long id) {
 
         return getEventOrThrowNotFoundException(id);
     }
@@ -63,16 +59,16 @@ public class EventController {
 //        return message
 //    }
 
-    /**
-     * @param id of event which users are required
-     * @return a map of the users with key user-id and value user-name
-     */
-    @GetMapping("/events/{id}/users")
-    public Map<String, String> getUsersOfEvent(@PathVariable String id) {
-
-        Event event = getEventOrThrowNotFoundException(id);
-        return event.getParticipants();
-    }
+//    /**
+//     * @param id of event which users are required
+//     * @return a map of the users with key user-id and value user-name
+//     */
+//    @GetMapping("/events/{id}/users")
+//    public Map<String, String> getUsersOfEvent(@PathVariable Long id) {
+//
+//        Event event = getEventOrThrowNotFoundException(id);
+//        return event.getParticipants();
+//    }
 
     /**
      * Saves an event into the database and returns 201 created status code
@@ -89,7 +85,7 @@ public class EventController {
     }
 
     @DeleteMapping("/events/{id}")
-    public void deleteEvent(@PathVariable String id) {
+    public void deleteEvent(@PathVariable Long id) {
 
         getEventOrThrowNotFoundException(id);
         eventRepository.deleteById(id);
@@ -108,40 +104,39 @@ public class EventController {
      * Request format for the request body  {"id":"1", "name":"myName"}
      *
      * */
-    @PutMapping("/events/{eventId}/users")
-    public void addUser(@Valid @RequestBody @ApiParam(
-            value = "Request format {\"id\":\"1\", \"name\":\"myName\"}")
-                                Map<String, String> user, @PathVariable String eventId) {
-
-        Event event = getEventOrThrowNotFoundException(eventId);
-        if (user.get("id").isBlank()) {
-            throw new NotFoundException("Event with id " + eventId + " does not exist");
-        }
-        int participantsNumber = event.getParticipantsNumber();
-        if (participantsNumber == event.getParticipants().size()) {
-            throw new NumberOfParticipantsReached("Maximum number of participants " + participantsNumber + " reached");
-        }
-        event.getParticipants().put(user.get("id"), user.get("name"));
-        eventRepository.save(event);
-    }
+//    @PutMapping("/events/{eventId}/users")
+//    public void addUser(@PathVariable
+//                                Long userId, @PathVariable Long eventId) {
+//
+//        Event event = getEventOrThrowNotFoundException(eventId);
+//        if (userId==null) {
+//            throw new NotFoundException("Event with id " + eventId + " does not exist");
+//        }
+//        int participantsNumber = event.getParticipantsNumber();
+//        if (participantsNumber == event.getParticipants().size()) {
+//            throw new NumberOfParticipantsReached("Maximum number of participants " + participantsNumber + " reached");
+//        }
+//        //event.getParticipants().put(user.get("id"), user.get("name"));
+//        eventRepository.save(event);
+//    }
 
     /*
      * Removes an user from the existing event
      *
      * */
-    @PutMapping("/events/{eventId}/users/{userId}")
-    public void deleteUser(@PathVariable String userId, @PathVariable String eventId) {
+//    @PutMapping("/events/{eventId}/users/{userId}")
+//    public void deleteUser(@PathVariable Long userId, @PathVariable Long eventId) {
+//
+//        Event event = getEventOrThrowNotFoundException(eventId);
+//        Map<String, String> participants = event.getParticipants();
+//        String exists=participants.remove(userId);
+//        if (exists==null){
+//            throw new NotFoundException("User with the id " +userId+" does not exist in event with the id "+eventId);
+//        }
+//        eventRepository.save(event);
+//    }
 
-        Event event = getEventOrThrowNotFoundException(eventId);
-        Map<String, String> participants = event.getParticipants();
-        String exists=participants.remove(userId);
-        if (exists==null){
-            throw new NotFoundException("User with the id " +userId+" does not exist in event with the id "+eventId);
-        }
-        eventRepository.save(event);
-    }
-
-    public Event getEventOrThrowNotFoundException(String id) {
+    public Event getEventOrThrowNotFoundException(Long id) {
         Optional<Event> event = eventRepository.findById(id);
         if (!event.isPresent()) {
             throw new NotFoundException("Event with the id " + id + " does not exist");

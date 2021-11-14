@@ -1,8 +1,8 @@
-package de.cogamemonolith.message.web;
+package de.cogamemonolith.web;
 
 
-import de.cogamemonolith.message.model.Message;
-import de.cogamemonolith.message.repository.MessageRepository;
+import de.cogamemonolith.model.Message;
+import de.cogamemonolith.repository.MessageRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

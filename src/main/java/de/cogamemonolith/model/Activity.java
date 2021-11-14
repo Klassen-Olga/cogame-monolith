@@ -1,4 +1,4 @@
-package de.cogamemonolith.event.model;
+package de.cogamemonolith.model;
 
 import de.cogamemonolith.validation.EnumValidation;
 import io.swagger.annotations.ApiModel;
@@ -7,6 +7,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.validation.constraints.Size;
 
 /**
@@ -17,8 +21,11 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 @AllArgsConstructor
 @ApiModel(description = "Contains information about the activities of the event")
+@Entity
 public class Activity{
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    private Long id;
     public enum ActivityArt {
         COMPUTER,
         TABLE,
@@ -26,12 +33,12 @@ public class Activity{
 
     }
 
-    @EnumValidation(enumClass = ActivityArt.class, message =AttributeDescription.activityArt)
-    @ApiModelProperty(notes =  AttributeDescription.activityArt)
+    @EnumValidation(enumClass = ActivityArt.class, message = EventAttributeDescription.activityArt)
+    @ApiModelProperty(notes =  EventAttributeDescription.activityArt)
     private String activityArt;
 
-    @Size(min= AttributeDescription.activityNameSize, message = AttributeDescription.activityName)
-    @ApiModelProperty(notes =  AttributeDescription.activityName)
+    @Size(min= EventAttributeDescription.activityNameSize, message = EventAttributeDescription.activityName)
+    @ApiModelProperty(notes =  EventAttributeDescription.activityName)
     private String name;
 }
 

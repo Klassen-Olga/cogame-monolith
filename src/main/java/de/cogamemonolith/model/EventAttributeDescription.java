@@ -1,11 +1,11 @@
-package de.cogamemonolith.event.model;
+package de.cogamemonolith.model;
 
 /*
  * Describes standardized messages and attribute sizes for api validation and swagger documentation
  * Changes to the size of the attributes will be directly reflected in the documentation.
  * */
 
-public class AttributeDescription {
+public class EventAttributeDescription {
 
     public static final int nameSize = 3;
     public static final int streetSize = 5;
