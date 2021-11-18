@@ -21,8 +21,8 @@ import java.util.Set;
  * and variables for various information (e.g. api description)  for all APIs in the project
  *
  * URLs:
- * http://localhost:8001/v2/api-docs           -API documentation
- * http://localhost:8001/swagger-ui/index.html -gui for API
+ * http://localhost:8080/v2/api-docs           -API documentation
+ * http://localhost:8080/swagger-ui/index.html -gui for API
  */
 @Configuration
 @EnableSwagger2
@@ -47,7 +47,7 @@ public class SwaggerConfig {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(new ApiInfo(
                         "cogame-monolith api",
-                        "api to manage backend fpr game appliction as part of the bachelor work",
+                        "api to manage backend for game application as part of the bachelor work",
                         "1.0.0",
                         "Terms of service",
                         DEFAULT_CONTACT,

@@ -1,7 +1,8 @@
-package de.cogamemonolith.model;
+package de.cogamemonolith.web.dto.in;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import de.cogamemonolith.model.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -10,7 +11,9 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.Valid;
-import javax.validation.constraints.*;
+import javax.validation.constraints.Future;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
@@ -22,29 +25,33 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-public class Event {
+@ApiModel(description = "Event request DTO-Object for creating and updating Event entity")
+public class EventCreateRequest {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
+    @ApiModelProperty(notes = AttributeDescription.name)
+    @Size(min = AttributeDescription.nameSize, message = AttributeDescription.name)
     private String name;
+
     private String description;
+
+    @Future(message = AttributeDescription.dateAndTime)
+    @ApiModelProperty(notes = AttributeDescription.dateAndTime)
     private LocalDateTime dateTimeOfEvent;
 
-    @ManyToOne
+    @Valid
+    private UserRequest creator;
+
+    @Valid
     private Address placeAddress;
-    @ManyToMany
+
+    @NotNull
+    @Size(min = AttributeDescription.activitiesSize, message = AttributeDescription.activities)
+    @ApiModelProperty(notes = AttributeDescription.activities)
     private List<@Valid Activity> activities;
-    @OneToMany
+
     private List<Tool> tools;
-    @OneToMany
-    private List<Message> messages;
-    @ManyToOne
-    private User creator;
-    @ManyToMany
-    private Set<User> participants;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime createdAt = LocalDateTime.now();

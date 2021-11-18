@@ -1,4 +1,4 @@
-package de.cogamemonolith.web;
+package de.cogamemonolith.web.controller;
 
 
 import de.cogamemonolith.model.Event;

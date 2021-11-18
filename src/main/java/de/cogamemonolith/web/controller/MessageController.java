@@ -1,4 +1,4 @@
-package de.cogamemonolith.web;
+package de.cogamemonolith.web.controller;
 
 
 import de.cogamemonolith.model.Message;
@@ -30,11 +30,11 @@ public class MessageController {
      * @param id of event, to which messages are assigned
      * @return a List of all message instances associated with the particular event
      */
-    @GetMapping("/events/{id}/messages")
-    public List<Message> getMessages(@PathVariable String id) {
-
-        return messageRepository.findByEventId(id);
-    }
+//    @GetMapping("/events/{id}/messages")
+//    public List<Message> getMessages(@PathVariable String id) {
+//
+//        return messageRepository.findByEventId(id);
+//    }
 
     /**
      * Saves an message into the database and returns 201 created status code

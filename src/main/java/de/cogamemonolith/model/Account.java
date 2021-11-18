@@ -1,5 +1,6 @@
 package de.cogamemonolith.model;
 
+import de.cogamemonolith.model.AttributeDescription;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -27,13 +28,13 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    @Email(message = UserAttributeDescription.email)
+    @Email(message = AttributeDescription.email)
     @NotBlank
-    @ApiModelProperty(notes = UserAttributeDescription.email)
+    @ApiModelProperty(notes = AttributeDescription.email)
     private String email;
 
-    @Size(min = UserAttributeDescription.passwordSize, message = UserAttributeDescription.password)
-    @ApiModelProperty(notes = UserAttributeDescription.password)
+    @Size(min = AttributeDescription.passwordSize, message = AttributeDescription.password)
+    @ApiModelProperty(notes = AttributeDescription.password)
     private String password;
 
 

@@ -11,7 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 /**
- * ontains information to a tool, that is required for a certain event e.g. Ball, Beer
+ * Contains information to a tool, that is required for a certain event e.g. Ball, Beer
  */
 @Data
 @AllArgsConstructor

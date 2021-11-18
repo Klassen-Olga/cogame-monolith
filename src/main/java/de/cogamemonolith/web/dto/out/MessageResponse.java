@@ -1,6 +1,7 @@
-package de.cogamemonolith.model;
+package de.cogamemonolith.web.dto.out;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import de.cogamemonolith.model.User;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -17,17 +18,14 @@ import java.time.LocalDateTime;
  */
 @AllArgsConstructor
 @NoArgsConstructor
-@ApiModel(description = "Contains a message-resource for a specific event from a specific user")
-@Entity
+@ApiModel(description = "Message request DTO-Object for responding on GET messages/... ")
 @Data
-public class Message {
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+public class MessageResponse {
+
     private Long id;
 
     @NotEmpty(message="User id can not be empty")
     @ApiModelProperty(notes = "Id of the user who posted the message. Should not be empty")
-    @ManyToOne
     private User user;
 
 

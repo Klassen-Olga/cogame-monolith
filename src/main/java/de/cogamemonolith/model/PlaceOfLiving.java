@@ -1,5 +1,6 @@
 package de.cogamemonolith.model;
 
+import de.cogamemonolith.model.AttributeDescription;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -26,12 +27,12 @@ public class PlaceOfLiving {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    @Size(min = UserAttributeDescription.citySize, message = UserAttributeDescription.city)
-    @ApiModelProperty(notes = UserAttributeDescription.city)
+    @Size(min = AttributeDescription.citySize, message = AttributeDescription.city)
+    @ApiModelProperty(notes = AttributeDescription.city)
     private String city;
 
-    @Size(min = UserAttributeDescription.countrySize, message = UserAttributeDescription.country)
-    @ApiModelProperty(notes = UserAttributeDescription.country)
+    @Size(min = AttributeDescription.countrySize, message = AttributeDescription.country)
+    @ApiModelProperty(notes = AttributeDescription.country)
     private String country;
 
 

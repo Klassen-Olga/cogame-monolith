@@ -1,5 +1,6 @@
 package de.cogamemonolith.model;
 
+import de.cogamemonolith.model.AttributeDescription;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -24,13 +25,13 @@ public class Occupation {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
-    @Size(min = UserAttributeDescription.occupationNameSize, message = UserAttributeDescription.occupationName)
-    @ApiModelProperty(notes = UserAttributeDescription.occupationName)
+    @Size(min = AttributeDescription.occupationNameSize, message = AttributeDescription.occupationName)
+    @ApiModelProperty(notes = AttributeDescription.occupationName)
     private String occupationName;
 
 
-    @Size(min = UserAttributeDescription.placeOfOccupationSize, message = UserAttributeDescription.placeOfOccupation)
-    @ApiModelProperty(notes = UserAttributeDescription.placeOfOccupation)
+    @Size(min = AttributeDescription.placeOfOccupationSize, message = AttributeDescription.placeOfOccupation)
+    @ApiModelProperty(notes = AttributeDescription.placeOfOccupation)
     private String placeOfOccupation;
 
 

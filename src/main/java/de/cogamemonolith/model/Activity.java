@@ -33,12 +33,12 @@ public class Activity{
 
     }
 
-    @EnumValidation(enumClass = ActivityArt.class, message = EventAttributeDescription.activityArt)
-    @ApiModelProperty(notes =  EventAttributeDescription.activityArt)
+    @EnumValidation(enumClass = ActivityArt.class, message = AttributeDescription.activityArt)
+    @ApiModelProperty(notes =  AttributeDescription.activityArt)
     private String activityArt;
 
-    @Size(min= EventAttributeDescription.activityNameSize, message = EventAttributeDescription.activityName)
-    @ApiModelProperty(notes =  EventAttributeDescription.activityName)
+    @Size(min= AttributeDescription.activityNameSize, message = AttributeDescription.activityName)
+    @ApiModelProperty(notes =  AttributeDescription.activityName)
     private String name;
 }
 

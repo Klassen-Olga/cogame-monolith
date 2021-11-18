@@ -24,15 +24,15 @@ public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
-    @Size(min = EventAttributeDescription.streetSize, message = EventAttributeDescription.street)
-    @ApiModelProperty(notes = EventAttributeDescription.street)
+    @Size(min = AttributeDescription.streetSize, message = AttributeDescription.street)
+    @ApiModelProperty(notes = AttributeDescription.street)
     private String streetAndHomeNumber;
 
-    @Size(min = EventAttributeDescription.citySize, message = EventAttributeDescription.city)
-    @ApiModelProperty(notes = EventAttributeDescription.city)
+    @Size(min = AttributeDescription.citySize, message = AttributeDescription.city)
+    @ApiModelProperty(notes = AttributeDescription.city)
     private String city;
 
-    @Size(min = EventAttributeDescription.countrySize, message = EventAttributeDescription.country)
-    @ApiModelProperty(notes = EventAttributeDescription.country)
+    @Size(min = AttributeDescription.countrySize, message = AttributeDescription.country)
+    @ApiModelProperty(notes = AttributeDescription.country)
     private String country;
 }
