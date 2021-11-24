@@ -1,6 +1,9 @@
 package de.cogamemonolith.web.dto.out;
 
-import de.cogamemonolith.model.*;
+import de.cogamemonolith.model.AttributeDescription;
+import de.cogamemonolith.model.Occupation;
+import de.cogamemonolith.model.PlaceOfLiving;
+import de.cogamemonolith.model.User;
 import de.cogamemonolith.validation.EnumValidation;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -32,7 +35,7 @@ public class UserResponse {
     private Long id;
 
     @Size(min = AttributeDescription.userNameSize, message = AttributeDescription.userName)
-    @ApiModelProperty(notes =  AttributeDescription.userName)
+    @ApiModelProperty(notes = AttributeDescription.userName)
     private String name;
 
     @Past(message = AttributeDescription.dateOdBirth)
@@ -42,7 +45,6 @@ public class UserResponse {
     @EnumValidation(enumClass = User.Sex.class, message = AttributeDescription.sex)
     @ApiModelProperty(notes = AttributeDescription.sex)
     private String sex;
-
     @ApiModelProperty(notes= AttributeDescription.phoneNumber)
     @Size(min = AttributeDescription.phoneNumberSize, message = AttributeDescription.phoneNumber)
     private String phoneNumber;
@@ -51,8 +53,7 @@ public class UserResponse {
     private PlaceOfLiving placeOfLiving;
     @Valid
     private Occupation occupation;
-    @Valid
-    private Account account;
+
 
     //    Optional attributes, which are needed for completing of personal account
     @ApiModelProperty(notes= AttributeDescription.preferencesList)
@@ -63,5 +64,6 @@ public class UserResponse {
     private List<String> favouriteGames;
     @ApiModelProperty(notes= AttributeDescription.preferencesList)
     private List<String> favouriteMusic;
+
 
 }

@@ -2,16 +2,16 @@ package de.cogamemonolith.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
-
 /*
-* Will be thrown if a field is marked as unique and is violated
-* e.g. two users with the same email should be created
+* will be thrown if an forbidden activity in performed on event
+* e.g. user wants to delete event, but is not the creator
 * */
-@ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
-public class UniqueKeyViolation extends RuntimeException{
+@ResponseStatus(HttpStatus.CONFLICT)
+public class EventConstraintViolation extends RuntimeException {
+
     private String message;
 
-    public UniqueKeyViolation(String s) {
+    public EventConstraintViolation(String s) {
         this.message = s;
     }
 

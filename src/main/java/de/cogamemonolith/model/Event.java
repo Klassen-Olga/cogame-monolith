@@ -32,18 +32,19 @@ public class Event {
     private String name;
     private String description;
     private LocalDateTime dateTimeOfEvent;
+    private Integer maximalNumberOfParticipants;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private Address placeAddress;
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     private List<@Valid Activity> activities;
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Tool> tools;
-    @OneToMany
-    private List<Message> messages;
+    @OneToMany(cascade = CascadeType.ALL)
+    private Set<Message> messages;
     @ManyToOne
     private User creator;
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     private Set<User> participants;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm")

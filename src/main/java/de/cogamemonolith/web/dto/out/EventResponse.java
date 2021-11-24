@@ -2,14 +2,16 @@ package de.cogamemonolith.web.dto.out;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import de.cogamemonolith.model.*;
+import de.cogamemonolith.model.Activity;
+import de.cogamemonolith.model.Address;
+import de.cogamemonolith.model.AttributeDescription;
+import de.cogamemonolith.model.Tool;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.Future;
 import javax.validation.constraints.NotNull;
@@ -51,8 +53,8 @@ public class EventResponse {
     private List<@Valid Activity> activities;
 
     private List<Tool> tools;
-    private List< @Valid Message> messages;
-    private Set<@Valid User> participants;
+    private List<@Valid MessageResponse> messages;
+    private Set<@Valid UserResponse> participants;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime createdAt = LocalDateTime.now();

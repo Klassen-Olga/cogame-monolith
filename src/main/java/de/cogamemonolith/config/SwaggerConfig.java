@@ -1,4 +1,4 @@
-package de.cogamemonolith.swagger;
+package de.cogamemonolith.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration;

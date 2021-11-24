@@ -1,5 +1,6 @@
 package de.cogamemonolith.exception;
 
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -92,6 +93,24 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
         return new ResponseEntity(exceptionResponse,  HttpStatus.SERVICE_UNAVAILABLE);
     }
+    /**
+     * will be thrown if an forbidden activity in performed on event
+     * e.g. user wants to delete event, but is not the creator
+     * @param ex         exception which is occurred
+     * @param webRequest gives access to request metadata
+     * @return 409 status code and details of the exception
+     */
+    @ExceptionHandler({EventConstraintViolation.class})
+    public final ResponseEntity<Object> unreachable
+    (EventConstraintViolation ex, WebRequest webRequest) {
+
+        ExceptionResponse exceptionResponse = new ExceptionResponse(LocalDate.now(),
+                ex.getMessage(),
+                webRequest.getDescription(false));
+
+        return new ResponseEntity(exceptionResponse,  HttpStatus.CONFLICT);
+    }
+
 
     /**
      * Will be called, when an exception will be thrown which is not present in this class
@@ -102,7 +121,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
      */
     @ExceptionHandler(Exception.class)
     public final ResponseEntity<Object> exception
-    (NotFoundException ex, WebRequest webRequest) {
+    (Exception ex, WebRequest webRequest) {
 
         ExceptionResponse exceptionResponse = new ExceptionResponse(LocalDate.now(), ex.getMessage(),
                 webRequest.getDescription(false));

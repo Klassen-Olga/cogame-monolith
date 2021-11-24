@@ -1,149 +1,232 @@
 package de.cogamemonolith.web.controller;
 
 
+import de.cogamemonolith.exception.EventConstraintViolation;
+import de.cogamemonolith.exception.NumberOfParticipantsReached;
 import de.cogamemonolith.model.Event;
-import de.cogamemonolith.repository.EventRepository;
-import de.cogamemonolith.exception.NotFoundException;
+import de.cogamemonolith.model.Message;
+import de.cogamemonolith.model.User;
+import de.cogamemonolith.web.dto.in.EventCreateRequest;
+import de.cogamemonolith.web.dto.in.MessageRequest;
+import de.cogamemonolith.web.dto.out.EventResponse;
+import de.cogamemonolith.web.dto.out.MessageResponse;
+import de.cogamemonolith.web.dto.out.UserResponse;
+import de.cogamemonolith.web.service.EventService;
+import de.cogamemonolith.web.service.MessageService;
+import de.cogamemonolith.web.service.UserService;
 import lombok.AllArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
-import java.util.Optional;
+import java.util.Set;
 
 /**
  * Restapi controller for event-service module
  * Manages get, post, put and delete methods
  */
-@Log4j2
 @AllArgsConstructor
 @RestController
 public class EventController {
 
-    EventRepository eventRepository;
+    EventService eventService;
+    UserService userService;
+    MessageService messageService;
 
 
-    @GetMapping("/greeting")
-    public String greeting() {
-
-        return "Hello from event service!";
-    }
-
+    /**
+     * @return all events present in database
+     */
     @GetMapping("/events")
-    public List<Event> getEvents() {
-        return eventRepository.findAll();
+    public List<EventResponse> getEventResponses() {
+
+        return eventService.getAllEventResponses();
     }
 
+    /*
+     * @return a certain event
+     */
     @GetMapping("/events/{id}")
-    public Event getEvent(@PathVariable Long id) {
+    public EventResponse getEventResponse(@PathVariable Long id) {
 
-        return getEventOrThrowNotFoundException(id);
+        return eventService.getEventResponse(id);
+    }
+
+
+    /**
+     * @param id of event
+     * @return all messages of an certain event
+     */
+    @GetMapping("/events/{id}/messages")
+    public List<MessageResponse> getMessageResponsesOfEvent(@PathVariable Long id) {
+
+        EventResponse eventResponse = eventService.getEventResponse(id);
+        return eventResponse.getMessages();
     }
 
     /**
-     * Makes a GET request to the message-service module and picks all messages of the event
-     *
-     * @param id of event which messages are required
-     * @return a list with messages
+     * @param id of event which users are required
+     * @return a set of the users DTO-s
      */
-//    @GetMapping("/events/{id}/messages")
-//    // while ($true) { curl http://localhost:8000/events/1/messages | Out-Host; Sleep 0.0001;  }
-//    public List<Message> getMessagesOfEvent(@PathVariable String id) {
-//
-//        getEventOrThrowNotFoundException(id);
-//        log.error("Message service unreachable");
-//        return message
-//    }
+    @GetMapping("/events/{id}/users")
+    public Set<UserResponse> getUserResponses(@PathVariable Long id) {
 
-//    /**
-//     * @param id of event which users are required
-//     * @return a map of the users with key user-id and value user-name
-//     */
-//    @GetMapping("/events/{id}/users")
-//    public Map<String, String> getUsersOfEvent(@PathVariable Long id) {
-//
-//        Event event = getEventOrThrowNotFoundException(id);
-//        return event.getParticipants();
-//    }
+        EventResponse event = getEventResponse(id);
+
+        return event.getParticipants();
+    }
 
     /**
      * Saves an event into the database and returns 201 created status code
      */
     @PostMapping("/events")
-    public ResponseEntity<Object> createEvent(@Valid @RequestBody Event event) {
+    @Transactional
+    public ResponseEntity<Object> createEvent(@Valid @RequestBody EventCreateRequest eventCreateRequest) {
 
-        Event newEvent = eventRepository.save(event);
+        User user = userService.getUser(eventCreateRequest.getCreatorId());
+        Event savedEvent = eventService.save(eventCreateRequest, user);
+
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
-                .buildAndExpand(newEvent.getId())
+                .buildAndExpand(savedEvent.getId())
                 .toUri();
         return ResponseEntity.created(location).build();
     }
 
-    @DeleteMapping("/events/{id}")
-    public void deleteEvent(@PathVariable Long id) {
 
-        getEventOrThrowNotFoundException(id);
-        eventRepository.deleteById(id);
+    /**
+     * deletes event and all objects accept users
+     *
+     * @param id        which even should be deleted
+     * @param creatorId an event can be only deleted by creator of event
+     */
+    @DeleteMapping("/events/{id}")
+    @Transactional
+    public void deleteEvent(@PathVariable Long id, @RequestParam Long creatorId) {
+
+        // check if event exists
+        Event event = eventService.getEvent(id);
+        //check if creator is creator of event
+        if (!event.getCreator().getId().equals(creatorId)) {
+            throw new EventConstraintViolation("User with id " + creatorId + " is not the creator of event with id " + id);
+        }
+        //messages will be automatic deleted with cascade all
+
+        //deleteEvent
+        eventService.deleteEvent(id);
+
     }
 
-    @PutMapping("/events")
-    public void changeEvent(@Valid @RequestBody Event event) {
+    /**
+     * adds an message to the event
+     *
+     * @param message dto of message entity
+     * @param id      event id
+     */
+    @PostMapping("/events/{id}/messages")
+    @Transactional
+    public void addMessage(@Valid @RequestBody MessageRequest message, @PathVariable Long id) {
 
-        getEventOrThrowNotFoundException(event.getId());
-        eventRepository.save(event);
+        // check if event exists
+        Event event = eventService.getEvent(id);
+        //check if user exists
+        User user = userService.getUser(message.getUserId());
+        //check if user is in event
+        if (!eventService.participatesUser(event, user)) {
+            throw new EventConstraintViolation("User with id " + message.getUserId() + " does not participates in event with id " + id);
+        }
+        //save message
+        Message savedMessage = messageService.save(message, user);
+        //add message to event
+        event.getMessages().add(savedMessage);
+        //save event
+        eventService.save(event);
+
+    }
+
+    /**
+     * deletes an message to the event
+     */
+    @DeleteMapping("/events/{eventId}/messages/{messageId}")
+    @Transactional
+    public void removeMessage(@PathVariable Long messageId,
+                              @PathVariable Long eventId) {
+
+        // check if event exists
+        Event event = eventService.getEvent(eventId);
+        //check if message exists
+        Message message = messageService.getMessage(messageId);
+        //check if message exists in event
+        if (!event.getMessages().contains(message)) {
+            throw new EventConstraintViolation("Message with id " + messageId + " is not part of event with id " + eventId);
+        }
+        //remove message from event
+        event.getMessages().remove(message);
+        //update event
+        eventService.save(event);
+        //remove message
+        messageService.delete(message);
 
     }
 
     /*
      * Adds an user to the existing event
-     * Request format for the request body  {"id":"1", "name":"myName"}
      *
      * */
-//    @PutMapping("/events/{eventId}/users")
-//    public void addUser(@PathVariable
-//                                Long userId, @PathVariable Long eventId) {
-//
-//        Event event = getEventOrThrowNotFoundException(eventId);
-//        if (userId==null) {
-//            throw new NotFoundException("Event with id " + eventId + " does not exist");
-//        }
-//        int participantsNumber = event.getParticipantsNumber();
-//        if (participantsNumber == event.getParticipants().size()) {
-//            throw new NumberOfParticipantsReached("Maximum number of participants " + participantsNumber + " reached");
-//        }
-//        //event.getParticipants().put(user.get("id"), user.get("name"));
-//        eventRepository.save(event);
-//    }
+    @PutMapping("/events/{eventId}/users/{userId}/add")
+    public void addUser(@PathVariable
+                                Long userId, @PathVariable Long eventId) {
+
+        //check if event exists
+        Event event = eventService.getEvent(eventId);
+
+        //check if user exists
+        User user = userService.getUser(userId);
+        //check if user already participates
+        if (event.getParticipants().contains(user)) {
+            throw new EventConstraintViolation("This user already participates in this event");
+        }
+        //check if participant number not reached
+        if (event.getMaximalNumberOfParticipants().equals(event.getParticipants().size())) {
+            throw new NumberOfParticipantsReached("Maximum number of participants " + event.getMaximalNumberOfParticipants() + " reached");
+        }
+        //add new participant to event
+        event.getParticipants().add(user);
+
+        //save
+        eventService.save(event);
+    }
 
     /*
      * Removes an user from the existing event
      *
      * */
-//    @PutMapping("/events/{eventId}/users/{userId}")
-//    public void deleteUser(@PathVariable Long userId, @PathVariable Long eventId) {
-//
-//        Event event = getEventOrThrowNotFoundException(eventId);
-//        Map<String, String> participants = event.getParticipants();
-//        String exists=participants.remove(userId);
-//        if (exists==null){
-//            throw new NotFoundException("User with the id " +userId+" does not exist in event with the id "+eventId);
-//        }
-//        eventRepository.save(event);
-//    }
+    @PutMapping("/events/{eventId}/users/{userId}/delete")
+    public void deleteUser(@PathVariable Long userId, @PathVariable Long eventId) {
 
-    public Event getEventOrThrowNotFoundException(Long id) {
-        Optional<Event> event = eventRepository.findById(id);
-        if (!event.isPresent()) {
-            throw new NotFoundException("Event with the id " + id + " does not exist");
+
+        //check if event exists
+        Event event = eventService.getEvent(eventId);
+
+        //check if user exists
+        User user = userService.getUser(userId);
+
+        //check if user to remove is not creator
+        if (userId.equals(event.getCreator().getId())) {
+            throw new EventConstraintViolation("Creator of event can not be deleted");
         }
-        return event.get();
-    }
+        //check if user participates in event         //remove participant from event
+        if (!event.getParticipants().remove(user)) {
+            throw new EventConstraintViolation("User with is " + userId + " does not participates in event with id " + eventId);
+        }
 
+        //update event
+        eventService.save(event);
+    }
 
 
 }
