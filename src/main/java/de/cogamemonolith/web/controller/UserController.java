@@ -1,7 +1,6 @@
 package de.cogamemonolith.web.controller;
 
 
-
 import de.cogamemonolith.exception.EventConstraintViolation;
 import de.cogamemonolith.exception.UniqueKeyViolation;
 import de.cogamemonolith.model.Event;
@@ -33,15 +32,12 @@ public class UserController {
     PasswordEncoder passwordEncoder;
 
 
-
-
     @GetMapping("/users")
     public List<UserResponse> getUsers() {
 
         return userService.getAll();
 
     }
-
 
 
     @GetMapping("/users/{id}")
@@ -83,8 +79,8 @@ public class UserController {
         // check if user exists
         User user = userService.getUser(id);
         //check if user has event created
-        List<Event> events=eventService.findAllByCreator(user);
-        if (userService.areEventsInFuture(events)){
+        List<Event> events = eventService.findAllByCreator(user);
+        if (userService.areEventsInFuture(events)) {
             throw new EventConstraintViolation("An user with active created events can not be deleted");
         }
         // delete user
