@@ -44,7 +44,7 @@ public class EventController {
     @GetMapping("/events")
     public List<EventResponse> getEventResponses() {
 
-        return eventService.getAllEventResponses();
+        return eventService.findAll();
     }
 
     /*
@@ -148,30 +148,6 @@ public class EventController {
 
     }
 
-    /**
-     * deletes an message to the event
-     */
-    @DeleteMapping("/events/{eventId}/messages/{messageId}")
-    @Transactional
-    public void removeMessage(@PathVariable Long messageId,
-                              @PathVariable Long eventId) {
-
-        // check if event exists
-        Event event = eventService.getEvent(eventId);
-        //check if message exists
-        Message message = messageService.getMessage(messageId);
-        //check if message exists in event
-        if (!event.getMessages().contains(message)) {
-            throw new EventConstraintViolation("Message with id " + messageId + " is not part of event with id " + eventId);
-        }
-        //remove message from event
-        event.getMessages().remove(message);
-        //update event
-        eventService.save(event);
-        //remove message
-        messageService.delete(message);
-
-    }
 
     /*
      * Adds an user to the existing event

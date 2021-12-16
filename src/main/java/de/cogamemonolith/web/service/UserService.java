@@ -1,6 +1,7 @@
 package de.cogamemonolith.web.service;
 
 import de.cogamemonolith.exception.NotFoundException;
+import de.cogamemonolith.model.Event;
 import de.cogamemonolith.model.User;
 import de.cogamemonolith.repository.UserRepository;
 import de.cogamemonolith.web.dto.in.UserCreateRequest;
@@ -9,6 +10,7 @@ import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -30,14 +32,14 @@ public class UserService {
 
     }
 
-    public UserResponse getUserResponse(Long id) {
+    public UserResponse getById(Long id) {
         UserResponse userResponse = new UserResponse();
         User user = getUser(id);
         modelMapper.map(user, userResponse);
         return userResponse;
     }
 
-    public List<UserResponse> findAllUserResponses() {
+    public List<UserResponse> getAll() {
         List<User> all = findAll();
         LinkedList<UserResponse> userResponses = new LinkedList<>();
         for (User user:all){
@@ -55,7 +57,16 @@ public class UserService {
 
     }
 
-    public void delete(User user) {
-        userRepository.delete(user);
+    public void delete(Long userId) {
+        userRepository.deleteById(userId);
+    }
+
+    public boolean areEventsInFuture(List<Event> events) {
+        for(Event event:events){
+            if (event.getDateTimeOfEvent().isAfter(LocalDateTime.now())){
+                return true;
+            }
+        }
+        return false;
     }
 }

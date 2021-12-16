@@ -38,7 +38,7 @@ public class UserController {
     @GetMapping("/users")
     public List<UserResponse> getUsers() {
 
-        return userService.findAllUserResponses();
+        return userService.getAll();
 
     }
 
@@ -47,7 +47,7 @@ public class UserController {
     @GetMapping("/users/{id}")
     public UserResponse getUser(@PathVariable Long id) {
 
-        return userService.getUserResponse(id);
+        return userService.getById(id);
 
     }
 
@@ -84,11 +84,11 @@ public class UserController {
         User user = userService.getUser(id);
         //check if user has event created
         List<Event> events=eventService.findAllByCreator(user);
-        if (events.size()!=0){
-            throw new EventConstraintViolation("This user has events created. Please delete all events first");
+        if (userService.areEventsInFuture(events)){
+            throw new EventConstraintViolation("An user with active created events can not be deleted");
         }
         // delete user
-        userService.delete(user);
+        userService.delete(id);
 
     }
 

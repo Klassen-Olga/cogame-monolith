@@ -23,7 +23,7 @@ public class EventService {
     EventRepository eventRepository;
     ModelMapper modelMapper;
 
-    public List<EventResponse> getAllEventResponses() {
+    public List<EventResponse> findAll() {
         List<EventResponse> eventResponses = new LinkedList<>();
 
         List<Event> events = eventRepository.findAll();
