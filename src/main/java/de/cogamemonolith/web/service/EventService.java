@@ -2,9 +2,12 @@ package de.cogamemonolith.web.service;
 
 import de.cogamemonolith.exception.NotFoundException;
 import de.cogamemonolith.model.Event;
+import de.cogamemonolith.model.Message;
 import de.cogamemonolith.model.User;
 import de.cogamemonolith.repository.EventRepository;
+import de.cogamemonolith.repository.MessageRepository;
 import de.cogamemonolith.web.dto.in.EventCreateRequest;
+import de.cogamemonolith.web.dto.in.MessageRequest;
 import de.cogamemonolith.web.dto.out.EventResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -21,6 +24,7 @@ import java.util.Set;
 @AllArgsConstructor
 public class EventService {
     EventRepository eventRepository;
+    MessageRepository messageRepository;
     ModelMapper modelMapper;
 
     public List<EventResponse> findAll() {
@@ -58,6 +62,13 @@ public class EventService {
         event.setParticipants(participants);
 
         return eventRepository.save(event);
+    }
+    public Message saveMessage(MessageRequest messageRequest, User creator) {
+
+        Message message = new Message();
+        message.setText(messageRequest.getText());
+        message.setUser(creator);
+        return messageRepository.save(message);
     }
 
     public void save(Event event) {

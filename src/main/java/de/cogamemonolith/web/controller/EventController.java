@@ -12,7 +12,6 @@ import de.cogamemonolith.web.dto.out.EventResponse;
 import de.cogamemonolith.web.dto.out.MessageResponse;
 import de.cogamemonolith.web.dto.out.UserResponse;
 import de.cogamemonolith.web.service.EventService;
-import de.cogamemonolith.web.service.MessageService;
 import de.cogamemonolith.web.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -35,7 +34,6 @@ public class EventController {
 
     EventService eventService;
     UserService userService;
-    MessageService messageService;
 
 
     /**
@@ -140,7 +138,7 @@ public class EventController {
             throw new EventConstraintViolation("User with id " + message.getUserId() + " does not participates in event with id " + id);
         }
         //save message
-        Message savedMessage = messageService.save(message, user);
+        Message savedMessage =eventService.saveMessage(message, user);
         //add message to event
         event.getMessages().add(savedMessage);
         //save event
